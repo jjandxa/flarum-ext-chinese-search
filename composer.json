@@ -1,0 +1,20 @@
+{
+    "name": "jjandxa/flarum-ext-chinese-search",
+    "description": "chinese search",
+    "type": "flarum-extension",
+    "version": "0.0.1@beta",
+    "require": {
+        "flarum/core": "^0.1.0-beta.7",
+        "hightman/xunsearch": "*@beta"
+    },
+    "autoload": {
+        "psr-4": {
+            "Plugin\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+          "title": "Chinese Search"
+        }
+    }
+}

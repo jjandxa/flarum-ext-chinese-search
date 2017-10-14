@@ -57,3 +57,6 @@ typings/
 # dotenv environment variables file
 .env
 
+js/forum/dist
+js/forum/node_modules
+js/forum/package-lock.json
