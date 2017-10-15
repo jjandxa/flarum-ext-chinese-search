@@ -106,7 +106,7 @@ class XunSearchService
 
         }
 
-        $tempDiscData = $search->search("title:".$query." ".$query);
+        $tempDiscData = $search->search("title:$query OR $query");
 
         // 取消折叠
         $search->setCollapse(null);
@@ -116,8 +116,7 @@ class XunSearchService
 
             $search->setLimit(2, 0);
             $tempPostData =
-                $search->search("discId:\"".$item->
-                    getFields()["discId"]."\" title:".$query." ".$query);
+                $search->search("discId:\"$discId\" (title:$query OR $query)");
             $tempData[$discId] = array("id" => $discId, "postIds" => array());
 
             foreach ($tempPostData as $post) {
