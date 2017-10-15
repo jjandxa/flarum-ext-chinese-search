@@ -9,9 +9,7 @@
 namespace Plugin\XunSearch\Controller;
 
 use Flarum\Api\Controller\ListDiscussionsController;
-use Flarum\Core\Discussion;
-use Flarum\Core\Search\SearchResults;
-use Plugin\XunSearch\XunSearchService;
+use Plugin\XunSearch\Service\XunSearchService;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
@@ -19,8 +17,6 @@ class XunSearchController extends ListDiscussionsController
 {
 
     // 查询数据
-
-
     protected function data(ServerRequestInterface $request, Document $document)
     {
         // 关键词

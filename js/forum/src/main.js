@@ -1,7 +1,7 @@
 import DiscussionList from 'flarum/components/DiscussionList';
 import DiscussionsSearchSource from 'flarum/components/DiscussionsSearchSource';
 
-app.initializers.add('hello', function() {
+app.initializers.add('flarum-ext-chinese-search', function() {
 
     DiscussionList.prototype.loadResults = function (offset) {
         const preloadedDiscussions = app.preloadedDocument();

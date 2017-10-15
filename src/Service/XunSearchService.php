@@ -6,14 +6,13 @@
  * Time: 上午12:51
  */
 
-namespace Plugin\XunSearch;
-
+namespace Plugin\XunSearch\Service;
 
 use Flarum\Core\Discussion;
 use Flarum\Core\Post;
 use Flarum\Core\Search\SearchResults;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
+use Plugin\XunSearch\Utils\XunSearchUtils;
 
 class XunSearchService
 {

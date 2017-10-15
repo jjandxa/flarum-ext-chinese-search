@@ -8,8 +8,6 @@
 
 namespace Plugin\XunSearch;
 
-require_once "src/XunSearchDispatcher.php";
-
 use Flarum\Event\ConfigureWebApp;
 use Flarum\Event\DiscussionWasHidden;
 use Flarum\Event\DiscussionWasRenamed;
@@ -22,10 +20,6 @@ use Flarum\Event\PostWasHidden;
 use Flarum\Event\PostWasRestored;
 use Flarum\Event\ConfigureApiRoutes;
 use Illuminate\Contracts\Events\Dispatcher;
-
-class BootStrap {
-    public static $rootDir = __DIR__;
-}
 
 return function (Dispatcher $event) {
     // 添加帖子到搜索引擎索引

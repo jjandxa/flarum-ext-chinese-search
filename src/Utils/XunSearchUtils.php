@@ -6,8 +6,7 @@
  * Time: 上午11:26
  */
 
-namespace Plugin\XunSearch;
-
+namespace Plugin\XunSearch\Utils;
 
 use Flarum\Core\Discussion;
 use Flarum\Core\Post;
@@ -16,7 +15,7 @@ class XunSearchUtils
 {
 
     static function getXuSearch(): \XS {
-        return new \XS(BootStrap::$rootDir."/app.ini");
+        return new \XS(dirname(dirname(__DIR__))."/app.ini");
     }
 
     // 获取搜索引擎索引

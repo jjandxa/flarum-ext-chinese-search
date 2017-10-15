@@ -8,10 +8,6 @@
 
 namespace Plugin\XunSearch;
 
-require_once "controller/XunSearchController.php";
-require_once "utils/XunSearchUtils.php";
-require_once "service/XunSearchService.php";
-
 use Flarum\Event\ConfigureApiRoutes;
 use Flarum\Event\ConfigureWebApp;
 use Flarum\Event\DiscussionWasHidden;
@@ -22,6 +18,8 @@ use Flarum\Event\PostWasPosted;
 use Flarum\Event\PostWasRestored;
 use Flarum\Event\PostWasRevised;
 use Plugin\XunSearch\Controller\XunSearchController;
+use Plugin\XunSearch\Service\XunSearchService;
+use Plugin\XunSearch\Utils\XunSearchUtils;
 
 class XunSearchDispatcher
 {
@@ -37,8 +35,8 @@ class XunSearchDispatcher
     // 添加前台逻辑
     static function initView(ConfigureWebApp $event) {
         if ($event->isForum()) {
-            $event->addAssets(BootStrap::$rootDir.'/js/forum/dist/extension.js');
-            $event->addBootstrapper('jjandxa/hello/main');
+            $event->addAssets(dirname(__DIR__).'/js/forum/dist/extension.js');
+            $event->addBootstrapper('jjandxa/flarum-ext-chinese-search/main');
         }
     }
 

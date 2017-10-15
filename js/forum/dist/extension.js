@@ -1,6 +1,6 @@
 'use strict';
 
-System.register('jjandxa/hello/main', ['flarum/components/DiscussionList', 'flarum/components/DiscussionsSearchSource'], function (_export, _context) {
+System.register('jjandxa/flarum-ext-chinese-search/main', ['flarum/components/DiscussionList', 'flarum/components/DiscussionsSearchSource'], function (_export, _context) {
     "use strict";
 
     var DiscussionList, DiscussionsSearchSource;
@@ -12,7 +12,7 @@ System.register('jjandxa/hello/main', ['flarum/components/DiscussionList', 'flar
         }],
         execute: function () {
 
-            app.initializers.add('hello', function () {
+            app.initializers.add('flarum-ext-chinese-search', function () {
 
                 DiscussionList.prototype.loadResults = function (offset) {
                     var preloadedDiscussions = app.preloadedDocument();

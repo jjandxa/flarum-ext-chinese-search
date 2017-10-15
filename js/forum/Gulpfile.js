@@ -2,7 +2,7 @@ var flarum = require('flarum-gulp');
 
 flarum({
     modules: {
-        'jjandxa/hello': [
+        'jjandxa/flarum-ext-chinese-search': [
             'src/**/*.js'
         ]
     }
