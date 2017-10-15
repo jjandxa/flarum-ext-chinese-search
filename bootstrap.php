@@ -12,16 +12,16 @@ use Flarum\Event\ConfigureWebApp;
 use Flarum\Event\DiscussionWasHidden;
 use Flarum\Event\DiscussionWasRenamed;
 use Flarum\Event\DiscussionWasRestored;
-use Plugin\XunSearch\XunSearchDispatcher;
+use Flarum\Event\ExtensionWasEnabled;
 use Flarum\Event\PostWasPosted;
 use Flarum\Event\PostWasRevised;
-use Flarum\Event\PostWasDeleted;
 use Flarum\Event\PostWasHidden;
 use Flarum\Event\PostWasRestored;
 use Flarum\Event\ConfigureApiRoutes;
 use Illuminate\Contracts\Events\Dispatcher;
 
 return function (Dispatcher $event) {
+
     // 添加帖子到搜索引擎索引
     $event->listen(PostWasPosted::class, array(XunSearchDispatcher::class, "posted"));
 

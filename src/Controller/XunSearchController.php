@@ -9,7 +9,10 @@
 namespace Plugin\XunSearch\Controller;
 
 use Flarum\Api\Controller\ListDiscussionsController;
+use Flarum\Core\Discussion;
+use Flarum\Core\Post;
 use Plugin\XunSearch\Service\XunSearchService;
+use Plugin\XunSearch\Utils\XunSearchUtils;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 

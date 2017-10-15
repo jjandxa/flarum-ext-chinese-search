@@ -13,6 +13,7 @@ use Flarum\Event\ConfigureWebApp;
 use Flarum\Event\DiscussionWasHidden;
 use Flarum\Event\DiscussionWasRenamed;
 use Flarum\Event\DiscussionWasRestored;
+use Flarum\Event\ExtensionWasEnabled;
 use Flarum\Event\PostWasHidden;
 use Flarum\Event\PostWasPosted;
 use Flarum\Event\PostWasRestored;
@@ -42,23 +43,34 @@ class XunSearchDispatcher
 
     // 添加帖子到索引
     static function posted(PostWasPosted $event) {
-        XunSearchService::addPostToIndex($event->post);
+        if ($event->post->type === "comment") {
+            XunSearchService::addPostToIndex($event->post);
+        }
+
     }
 
     // 修改帖子到索引
     static function revised(PostWasRevised $event) {
-        XunSearchUtils::getIndex()->update(XunSearchUtils::getDocument($event->post->discussion,
-            $event->post, $event->post->discussion->comments_count));
+        if ($event->post->type === "comment") {
+            XunSearchUtils::getIndex()->update(XunSearchUtils::getDocument($event->post->discussion,
+                $event->post, $event->post->discussion->comments_count));
+        }
+
     }
 
     // 隐藏帖子到索引
     static function hidden(PostWasHidden $event) {
-        XunSearchService::deletePostToIndex($event->post);
+        if ($event->post->type === "comment") {
+            XunSearchService::deletePostToIndex($event->post);
+        }
+
     }
 
     // 恢复帖子到索引
     static function restored(PostWasRestored $event) {
-        XunSearchService::addPostToIndex($event->post);
+        if ($event->post->type === "comment") {
+            XunSearchService::addPostToIndex($event->post);
+        }
     }
 
     // 话题修改名称到索引

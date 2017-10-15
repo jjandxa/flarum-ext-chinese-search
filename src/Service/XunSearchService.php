@@ -150,7 +150,7 @@ class XunSearchService
 
     // 根据话题id获取所有的帖子
     static function getPostsByDiscussionId($discussionId) {
-        return Post::query()->where("discussion_id", $discussionId)->get();
+        return Post::query()->where("discussion_id", $discussionId)->where("type", "comment")->get();
     }
 
     // 添加帖子到索引
