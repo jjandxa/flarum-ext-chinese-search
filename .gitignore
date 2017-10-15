@@ -59,3 +59,4 @@ typings/
 
 js/forum/node_modules
 js/forum/package-lock.json
+.idea/
