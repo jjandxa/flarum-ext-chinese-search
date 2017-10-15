@@ -1,8 +1,16 @@
 {
     "name": "jjandxa/flarum-ext-chinese-search",
     "description": "chinese search",
+    "version": "0.0.1",
     "type": "flarum-extension",
-    "version": "0.0.1@beta",
+    "license": "Apache License 2.0",
+    "authors": [
+        {
+            "name": "jjandxa",
+            "email": "jjandxa@gmail.com"
+        }
+    ],
+    "minimum-stability": "beta",
     "require": {
         "flarum/core": "^0.1.0-beta.7",
         "hightman/xunsearch": "*@beta"
