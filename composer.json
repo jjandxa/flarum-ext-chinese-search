@@ -1,7 +1,7 @@
 {
     "name": "jjandxa/flarum-ext-chinese-search",
     "description": "chinese search",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "type": "flarum-extension",
     "license": "Apache License 2.0",
     "authors": [
