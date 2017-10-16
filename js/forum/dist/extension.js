@@ -25,7 +25,7 @@ System.register('jjandxa/flarum-ext-chinese-search/main', ['flarum/components/Di
                     params.page = { offset: offset };
                     params.include = params.include.join(',');
 
-                    if (params.filter.q !== undefined && params.filter.q.indexOf('is:') === -1 && params.filter.q.indexOf('tag:') === -1) {
+                    if (params.filter.q !== undefined && params.filter.q.indexOf('is:') === -1 && params.filter.q.indexOf('tag:') === -1 && params.filter.q.indexOf('author:') === -1) {
                         return app.store.find('xun/discussions', params);
                     }
                     return app.store.find('discussions', params);
