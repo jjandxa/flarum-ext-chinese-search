@@ -116,7 +116,7 @@ class XunSearchService
 
             $search->setLimit(2, 0);
             $tempPostData =
-                $search->search("discId:\"$discId\" (title:$query OR $query)");
+                $search->search("discId:\"$discId\" $query");
             $tempData[$discId] = array("id" => $discId, "postIds" => array());
 
             foreach ($tempPostData as $post) {
