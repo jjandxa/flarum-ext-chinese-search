@@ -8,43 +8,10 @@
 
 namespace Plugin\XunSearch;
 
-use Flarum\Event\ConfigureWebApp;
-use Flarum\Event\DiscussionWasHidden;
-use Flarum\Event\DiscussionWasRenamed;
-use Flarum\Event\DiscussionWasRestored;
-use Flarum\Event\ExtensionWasEnabled;
-use Flarum\Event\PostWasPosted;
-use Flarum\Event\PostWasRevised;
-use Flarum\Event\PostWasHidden;
-use Flarum\Event\PostWasRestored;
-use Flarum\Event\ConfigureApiRoutes;
 use Illuminate\Contracts\Events\Dispatcher;
 
-return function (Dispatcher $event) {
+return function (Dispatcher $events) {
 
-    // 添加帖子到搜索引擎索引
-    $event->listen(PostWasPosted::class, array(XunSearchDispatcher::class, "posted"));
+    $events->subscribe(XunSearchDispatcher::class);
 
-    // 更新帖子到搜索引擎索引
-    $event->listen(PostWasRevised::class, array(XunSearchDispatcher::class, "revised"));
-
-    // 隐藏帖子话题到搜索引擎索引
-    $event->listen(PostWasHidden::class, array(XunSearchDispatcher::class, "hidden"));
-
-    // 恢复帖子到搜索引擎索引
-    $event->listen(PostWasRestored::class, array(XunSearchDispatcher::class, "restored"));
-
-    // 修改话题到搜索引擎索引
-    $event->listen(DiscussionWasRenamed::class, array(XunSearchDispatcher::class, "discussionRenamed"));
-
-    // 隐藏话题到搜索引擎索引
-    $event->listen(DiscussionWasHidden::class, array(XunSearchDispatcher::class, "discussionHidden"));
-
-    // 恢复话题到搜索引擎索引
-    $event->listen(DiscussionWasRestored::class, array(XunSearchDispatcher::class, "discussionRestored"));
-
-    $event->listen(ConfigureApiRoutes::class,
-        array(XunSearchDispatcher::class, "registerApi"));
-    $event->listen(ConfigureWebApp::class,
-        array(XunSearchDispatcher::class, "initView"));
 };

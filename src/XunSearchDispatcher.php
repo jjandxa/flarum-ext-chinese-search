@@ -21,11 +21,61 @@ use Flarum\Event\PostWasRevised;
 use Plugin\XunSearch\Controller\XunSearchController;
 use Plugin\XunSearch\Service\XunSearchService;
 use Plugin\XunSearch\Utils\XunSearchUtils;
+use Illuminate\Contracts\Events\Dispatcher;
 
 class XunSearchDispatcher
 {
+
+    private $xunSearchUtils;
+
+    private $xunSearchService;
+
+    /**
+     * XunSearchDispatcher constructor.
+     * @param $xunSearchUtils
+     * @param $xunSearchService
+     */
+    public function __construct(XunSearchUtils $xunSearchUtils, XunSearchService $xunSearchService)
+    {
+        $this->xunSearchUtils = $xunSearchUtils;
+        $this->xunSearchService = $xunSearchService;
+    }
+
+
+    /**
+     * @param Dispatcher $events
+     */
+    public function subscribe(Dispatcher $events)
+    {
+        // 添加帖子到搜索引擎索引
+        $events->listen(PostWasPosted::class, [$this, "posted"]);
+
+        // 更新帖子到搜索引擎索引
+        $events->listen(PostWasRevised::class, [$this, "revised"]);
+
+        // 隐藏帖子话题到搜索引擎索引
+        $events->listen(PostWasHidden::class, [$this, "hidden"]);
+
+        // 恢复帖子到搜索引擎索引
+        $events->listen(PostWasRestored::class, [$this, "restored"]);
+
+        // 修改话题到搜索引擎索引
+        $events->listen(DiscussionWasRenamed::class, [$this, "discussionRenamed"]);
+
+        // 隐藏话题到搜索引擎索引
+        $events->listen(DiscussionWasHidden::class, [$this, "discussionHidden"]);
+
+        // 恢复话题到搜索引擎索引
+        $events->listen(DiscussionWasRestored::class, [$this, "discussionRestored"]);
+
+        $events->listen(ConfigureApiRoutes::class,
+            array($this, "registerApi"));
+        $events->listen(ConfigureWebApp::class,
+            array($this, "initView"));
+    }
+
     // 添加后台Api
-    static function registerApi(ConfigureApiRoutes $event) {
+    function registerApi(ConfigureApiRoutes $event) {
         $event->get(
           "/xun/discussions",
           "xun.discussions.index",
@@ -34,7 +84,7 @@ class XunSearchDispatcher
     }
 
     // 添加前台逻辑
-    static function initView(ConfigureWebApp $event) {
+    function initView(ConfigureWebApp $event) {
         if ($event->isForum()) {
             $event->addAssets(dirname(__DIR__).'/js/forum/dist/extension.js');
             $event->addBootstrapper('jjandxa/flarum-ext-chinese-search/main');
@@ -42,49 +92,49 @@ class XunSearchDispatcher
     }
 
     // 添加帖子到索引
-    static function posted(PostWasPosted $event) {
+    function posted(PostWasPosted $event) {
         if ($event->post->type === "comment") {
-            XunSearchService::addPostToIndex($event->post);
+            $this->xunSearchService->addPostToIndex($event->post);
         }
 
     }
 
     // 修改帖子到索引
-    static function revised(PostWasRevised $event) {
+    function revised(PostWasRevised $event) {
         if ($event->post->type === "comment") {
-            XunSearchUtils::getIndex()->update(XunSearchUtils::getDocument($event->post->discussion,
+            $this->xunSearchUtils->getIndex()->update(XunSearchUtils::getDocument($event->post->discussion,
                 $event->post, $event->post->discussion->comments_count));
         }
 
     }
 
     // 隐藏帖子到索引
-    static function hidden(PostWasHidden $event) {
+    function hidden(PostWasHidden $event) {
         if ($event->post->type === "comment") {
-            XunSearchService::deletePostToIndex($event->post);
+            $this->xunSearchService->deletePostToIndex($event->post);
         }
 
     }
 
     // 恢复帖子到索引
-    static function restored(PostWasRestored $event) {
+    function restored(PostWasRestored $event) {
         if ($event->post->type === "comment") {
-            XunSearchService::addPostToIndex($event->post);
+            $this->xunSearchService->addPostToIndex($event->post);
         }
     }
 
     // 话题修改名称到索引
-    static function discussionRenamed(DiscussionWasRenamed $event) {
-        XunSearchService::renameDiscussion($event->discussion);
+    function discussionRenamed(DiscussionWasRenamed $event) {
+        $this->xunSearchService->renameDiscussion($event->discussion);
     }
 
     // 话题隐藏到索引
-    static function discussionHidden(DiscussionWasHidden $event) {
-        XunSearchService::deleteDiscussion($event->discussion);
+    function discussionHidden(DiscussionWasHidden $event) {
+        $this->xunSearchService->deleteDiscussion($event->discussion);
     }
 
     // 话题恢复到索引
-    static function discussionRestored(DiscussionWasRestored $event) {
-        XunSearchService::addDiscussion($event->discussion);
+    function discussionRestored(DiscussionWasRestored $event) {
+        $this->xunSearchService->addDiscussion($event->discussion);
     }
 }

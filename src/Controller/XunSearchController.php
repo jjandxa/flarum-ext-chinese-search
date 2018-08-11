@@ -12,12 +12,28 @@ use Flarum\Api\Controller\ListDiscussionsController;
 use Flarum\Core\Discussion;
 use Flarum\Core\Post;
 use Plugin\XunSearch\Service\XunSearchService;
-use Plugin\XunSearch\Utils\XunSearchUtils;
+use Flarum\Core\Search\Discussion\DiscussionSearcher;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
+use Flarum\Api\UrlGenerator;
 
 class XunSearchController extends ListDiscussionsController
 {
+
+    private $searchService;
+
+    /**
+     * XunSearchController constructor.
+     * @param XunSearchService $searchService
+     * @param DiscussionSearcher $searcher
+     * @param UrlGenerator $url
+     */
+    public function __construct(XunSearchService $searchService,
+                                DiscussionSearcher $searcher, UrlGenerator $url)
+    {
+        parent::__construct($searcher, $url);
+        $this->searchService = $searchService;
+    }
 
     // 查询数据
     protected function data(ServerRequestInterface $request, Document $document)
@@ -30,7 +46,7 @@ class XunSearchController extends ListDiscussionsController
         // 排序
         $sort = $this->extractSort($request);
 
-        $result = XunSearchService::search($query, $limit, $offset, $sort);
+        $result = $this->searchService->search($query, $limit, $offset, $sort);
 
         $document->addPaginationLinks(
             $this->url->toRoute('xun.discussions.index'),

@@ -16,14 +16,27 @@ use Plugin\XunSearch\Utils\XunSearchUtils;
 
 class XunSearchService
 {
-    static function search($query, $limit, $offset, $sort) {
 
-        $convertData = static::convertDiscussion($query, $limit + 1, $offset, $sort);
+    private $xunSearchUtils;
+
+    /**
+     * XunSearchService constructor.
+     * @param $xunSearchUtils
+     */
+    public function __construct(XunSearchUtils $xunSearchUtils)
+    {
+        $this->xunSearchUtils = $xunSearchUtils;
+    }
+
+
+    function search($query, $limit, $offset, $sort) {
+
+        $convertData = $this->convertDiscussion($query, $limit + 1, $offset, $sort);
 
         $discussions = new Collection();
         if (count($convertData) > 0) {
             $query = Discussion::query()->
-            whereIn("id", static::getDiscussionIds($convertData));
+            whereIn("id", $this->getDiscussionIds($convertData));
 
             if ($sort !== null) {
                 // 最新回复
@@ -50,7 +63,7 @@ class XunSearchService
 
             $discussions = $query->get();
 
-            static::loadRelevantPosts($discussions, $convertData);
+            $this->loadRelevantPosts($discussions, $convertData);
         }
 
         $areMoreResults = $limit > 0 && count($convertData) > $limit;
@@ -64,7 +77,7 @@ class XunSearchService
         return $result;
     }
 
-    static function getDiscussionIds($convertData) {
+    function getDiscussionIds($convertData) {
         $temp = [];
         foreach ($convertData as $data) {
             array_push($temp, $data["id"]);
@@ -73,10 +86,10 @@ class XunSearchService
     }
 
     // 转换数据
-    static function convertDiscussion($query, $limit, $offset, $sort) {
+    function convertDiscussion($query, $limit, $offset, $sort) {
         $tempData = [];
         // 搜索逻辑
-        $search = XunSearchUtils::getSearch();
+        $search = $this->xunSearchUtils->getSearch();
         $search->setLimit($limit, $offset);
 
         // 折叠字段
@@ -128,8 +141,7 @@ class XunSearchService
     }
 
     // 处理帖子回复内容
-    static function loadRelevantPosts(Collection $discussions, $relevantPostIds)
-    {
+    function loadRelevantPosts(Collection $discussions, $relevantPostIds) {
         $postIds = [];
         foreach ($relevantPostIds as $ids) {
             $postIds = array_merge($postIds, array_slice($ids["postIds"], 0, 2));
@@ -149,13 +161,13 @@ class XunSearchService
     }
 
     // 根据话题id获取所有的帖子
-    static function getPostsByDiscussionId($discussionId) {
+    function getPostsByDiscussionId($discussionId) {
         return Post::query()->where("discussion_id", $discussionId)->where("type", "comment")->get();
     }
 
     // 添加帖子到索引
-    static function addPostToIndex(Post $post) {
-        $posts = static::getPostsByDiscussionId($post->discussion_id);
+    function addPostToIndex(Post $post) {
+        $posts = $this->getPostsByDiscussionId($post->discussion_id);
         // 打开索引
         $index = XunSearchUtils::getIndex();
         // 打开缓冲区
@@ -164,12 +176,12 @@ class XunSearchService
         foreach ($posts as $item) {
             // 需要新增的索引
             if ($item->id === $post->id) {
-                $doc = XunSearchUtils::getDocument($post->discussion,
+                $doc = $this->xunSearchUtils->getDocument($post->discussion,
                     $item, $posts->count());
                 $index->add($doc);
             } else {
                 // 需要更新的索引
-                $doc = XunSearchUtils::getDocument($post->discussion,
+                $doc = $this->xunSearchUtils->getDocument($post->discussion,
                     $item, $posts->count());
                 $index->update($doc);
             }
@@ -178,61 +190,61 @@ class XunSearchService
     }
 
     // 删除帖子到索引
-    static function deletePostToIndex(Post $post) {
+    function deletePostToIndex(Post $post) {
         // 获取索引
-        $index = XunSearchUtils::getIndex();
+        $index = $this->xunSearchUtils->getIndex();
         $index->openBuffer();
 
         // 删除当前记录
-        XunSearchUtils::getIndex()->del($post->id);
+        $this->xunSearchUtils->getIndex()->del($post->id);
         // 更新其他记录的count
-        $posts = static::getPostsByDiscussionId($post->discussion_id);
+        $posts = $this->getPostsByDiscussionId($post->discussion_id);
         foreach ($posts as $item) {
-            $doc = XunSearchUtils::getDocument($post->discussion, $item, $posts->count());
+            $doc = $this->xunSearchUtils->getDocument($post->discussion, $item, $posts->count());
             $index->update($doc);
         }
         $index->closeBuffer();
     }
 
     // 话题重命名
-    static function renameDiscussion(Discussion $discussion) {
+    function renameDiscussion(Discussion $discussion) {
         // 获取索引
-        $index = XunSearchUtils::getIndex();
+        $index = $this->xunSearchUtils->getIndex();
         $index->openBuffer();
 
         // 更新所有记录
-        $posts = static::getPostsByDiscussionId($discussion->id);
+        $posts = $this->getPostsByDiscussionId($discussion->id);
         foreach ($posts as $item) {
-            $doc = XunSearchUtils::getDocument($discussion, $item, $posts->count());
+            $doc = $this->xunSearchUtils->getDocument($discussion, $item, $posts->count());
             $index->update($doc);
         }
         $index->closeBuffer();
     }
 
     // 删除话题
-    static function deleteDiscussion(Discussion $discussion) {
+    function deleteDiscussion(Discussion $discussion) {
         // 获取索引
-        $index = XunSearchUtils::getIndex();
+        $index = $this->xunSearchUtils->getIndex();
         $index->openBuffer();
 
         // 更新所有记录
-        $posts = static::getPostsByDiscussionId($discussion->id);
+        $posts = $this->getPostsByDiscussionId($discussion->id);
         foreach ($posts as $item) {
             $index->del($item->id);
         }
         $index->closeBuffer();
     }
 
-    // 删除话题
-    static function addDiscussion(Discussion $discussion) {
+    // 添加话题
+    function addDiscussion(Discussion $discussion) {
         // 获取索引
-        $index = XunSearchUtils::getIndex();
+        $index = $this->xunSearchUtils->getIndex();
         $index->openBuffer();
 
         // 更新所有记录
-        $posts = static::getPostsByDiscussionId($discussion->id);
+        $posts = $this->getPostsByDiscussionId($discussion->id);
         foreach ($posts as $item) {
-            $doc = XunSearchUtils::getDocument($discussion, $item, $posts->count());
+            $doc = $this->xunSearchUtils->getDocument($discussion, $item, $posts->count());
             $index->add($doc);
         }
         $index->closeBuffer();

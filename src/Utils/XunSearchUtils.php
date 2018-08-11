@@ -14,22 +14,22 @@ use Flarum\Core\Post;
 class XunSearchUtils
 {
 
-    static function getXuSearch(): \XS {
+    function getXuSearch(): \XS {
         return new \XS(dirname(dirname(__DIR__))."/app.ini");
     }
 
     // 获取搜索引擎索引
-    static function getIndex(): \XSIndex {
-        return self::getXuSearch()->index;
+    function getIndex(): \XSIndex {
+        return $this->getXuSearch()->index;
     }
 
     // 获取搜索
-    static function getSearch(): \XSSearch {
-        return self::getXuSearch()->search;
+    function getSearch(): \XSSearch {
+        return $this->getXuSearch()->search;
     }
 
     // 获取文档
-    static function getDocument(Discussion $discussion, Post $post, $count): \XSDocument {
+    function getDocument(Discussion $discussion, Post $post, $count): \XSDocument {
         $data = array(
             "id" => $post->id,
             "discId" => $discussion->id,
