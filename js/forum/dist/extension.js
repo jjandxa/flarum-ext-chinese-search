@@ -15,11 +15,6 @@ System.register('jjandxa/flarum-ext-chinese-search/main', ['flarum/components/Di
             app.initializers.add('flarum-ext-chinese-search', function () {
 
                 DiscussionList.prototype.loadResults = function (offset) {
-                    var preloadedDiscussions = app.preloadedDocument();
-
-                    if (preloadedDiscussions) {
-                        return m.deferred().resolve(preloadedDiscussions).promise;
-                    }
 
                     var params = this.requestParams();
                     params.page = { offset: offset };
