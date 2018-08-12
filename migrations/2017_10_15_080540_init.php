@@ -7,8 +7,8 @@ use Illuminate\Database\Schema\Builder;
 use Plugin\XunSearch\Utils\XunSearchUtils;
 
 return [
-    'up' => function (Builder $schema) {
-        $index = XunSearchUtils::getIndex();
+    'up' => function (XunSearchUtils $xunSearchUtils) {
+        $index = $xunSearchUtils->getIndex();
         $index->clean();
 
         $index->openBuffer(8);
@@ -29,12 +29,10 @@ return [
 
         }
 
-
-
         $index->closeBuffer();
     },
-    'down' => function (Builder $schema) {
-        $index = XunSearchUtils::getIndex();
+    'down' => function (XunSearchUtils $xunSearchUtils) {
+        $index = $xunSearchUtils->getIndex();
         $index->clean();
     }
 ];

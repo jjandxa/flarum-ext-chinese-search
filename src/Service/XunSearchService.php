@@ -169,7 +169,7 @@ class XunSearchService
     function addPostToIndex(Post $post) {
         $posts = $this->getPostsByDiscussionId($post->discussion_id);
         // 打开索引
-        $index = XunSearchUtils::getIndex();
+        $index = $this->xunSearchUtils->getIndex();
         // 打开缓冲区
         $index->openBuffer();
 
