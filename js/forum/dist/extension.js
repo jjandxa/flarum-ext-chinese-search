@@ -16,11 +16,23 @@ System.register('jjandxa/flarum-ext-chinese-search/main', ['flarum/components/Di
 
                 DiscussionList.prototype.loadResults = function (offset) {
 
+                    var preloadedDiscussions = app.preloadedDocument();
+
                     var params = this.requestParams();
                     params.page = { offset: offset };
                     params.include = params.include.join(',');
 
+                    if (preloadedDiscussions && params.filter.q !== undefined && params.filter.q.indexOf('is:') === -1 && params.filter.q.indexOf('tag:') === -1 && params.filter.q.indexOf('author:') === -1) {
+
+                        var resultData = app.store.find('xun/discussions', params);
+
+                        return m.deferred().resolve(resultData).promise;
+                    } else if (preloadedDiscussions) {
+                        return m.deferred().resolve(preloadedDiscussions).promise;
+                    }
+
                     if (params.filter.q !== undefined && params.filter.q.indexOf('is:') === -1 && params.filter.q.indexOf('tag:') === -1 && params.filter.q.indexOf('author:') === -1) {
+
                         return app.store.find('xun/discussions', params);
                     }
                     return app.store.find('discussions', params);

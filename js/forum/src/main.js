@@ -5,13 +5,28 @@ app.initializers.add('flarum-ext-chinese-search', function() {
 
     DiscussionList.prototype.loadResults = function (offset) {
 
+
+        const preloadedDiscussions = app.preloadedDocument();
+
         const params = this.requestParams();
         params.page = {offset};
         params.include = params.include.join(',');
 
+        if (preloadedDiscussions && params.filter.q !== undefined && params.filter.q.indexOf('is:') === -1
+            && params.filter.q.indexOf('tag:') === -1
+            && params.filter.q.indexOf('author:') === -1) {
+
+            const resultData = app.store.find('xun/discussions', params);
+
+            return m.deferred().resolve(resultData).promise;
+        } else if (preloadedDiscussions) {
+            return m.deferred().resolve(preloadedDiscussions).promise;
+        }
+
         if (params.filter.q !== undefined && params.filter.q.indexOf('is:') === -1
             && params.filter.q.indexOf('tag:') === -1
             && params.filter.q.indexOf('author:') === -1) {
+
             return app.store.find('xun/discussions', params);
         }
         return app.store.find('discussions', params);
