@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: aixiaoai
- * Date: 17-10-12
- * Time: 上午8:55
- */
 
 namespace Plugin\XunSearch;
 
