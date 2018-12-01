@@ -8,12 +8,11 @@
 
 namespace Plugin\XunSearch\Utils;
 
-use Flarum\Core\Discussion;
-use Flarum\Core\Post;
+use Flarum\Discussion\Discussion;
+use Flarum\Post\Post;
 
 class XunSearchUtils
 {
-
     function getXuSearch(): \XS {
         return new \XS(dirname(dirname(__DIR__))."/app.ini");
     }
@@ -35,8 +34,8 @@ class XunSearchUtils
             "discId" => $discussion->id,
             "title" => $discussion->title,
             "content" => $post->content,
-            "time" => strtotime($post->time),
-            "discTime" => strtotime($post->discussion->start_time),
+            "time" => strtotime($post->created_at),
+            "discTime" => strtotime($post->discussion->created_at),
             "count" => $count
         );
         $doc = new \XSDocument;

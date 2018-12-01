@@ -9,13 +9,13 @@
 namespace Plugin\XunSearch\Controller;
 
 use Flarum\Api\Controller\ListDiscussionsController;
-use Flarum\Core\Discussion;
-use Flarum\Core\Post;
+use Flarum\Discussion\Discussion;
+use Flarum\Post\Post;
 use Plugin\XunSearch\Service\XunSearchService;
-use Flarum\Core\Search\Discussion\DiscussionSearcher;
+use Flarum\Discussion\Search\DiscussionSearcher;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
-use Flarum\Api\UrlGenerator;
+use Flarum\Http\UrlGenerator;
 
 class XunSearchController extends ListDiscussionsController
 {
@@ -46,17 +46,30 @@ class XunSearchController extends ListDiscussionsController
         // 排序
         $sort = $this->extractSort($request);
 
-        $result = $this->searchService->search($query, $limit, $offset, $sort);
+        $load = array_merge($this->extractInclude($request), ['state']);
+
+        $results = $this->searchService->search($query, $limit, $offset, $sort);
 
         $document->addPaginationLinks(
-            $this->url->toRoute('xun.discussions.index'),
+            $this->url->to('api')->route('xun.discussions.index'),
             $request->getQueryParams(),
             $offset,
             $limit,
-            $result->areMoreResults() ? null : 0
+            $results->areMoreResults() ? null : 0
         );
 
-        return $result->getResults();
-    }
+        $results = $results->getResults()->load($load);
 
+        if ($relations = array_intersect($load, ['firstPost', 'lastPost'])) {
+            foreach ($results as $discussion) {
+                foreach ($relations as $relation) {
+                    if ($discussion->$relation) {
+                        $discussion->$relation->discussion = $discussion;
+                    }
+                }
+            }
+        }
+
+        return $results;
+    }
 }

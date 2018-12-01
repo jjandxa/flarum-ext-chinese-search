@@ -1,13 +1,11 @@
+import app from 'flarum/app';
 import DiscussionList from 'flarum/components/DiscussionList';
 import DiscussionsSearchSource from 'flarum/components/DiscussionsSearchSource';
 
 app.initializers.add('flarum-ext-chinese-search', function() {
 
     DiscussionList.prototype.loadResults = function (offset) {
-
-
-        const preloadedDiscussions = app.preloadedDocument();
-
+        const preloadedDiscussions = app.preloadedApiDocument();
         const params = this.requestParams();
         params.page = {offset};
         params.include = params.include.join(',');
@@ -34,13 +32,12 @@ app.initializers.add('flarum-ext-chinese-search', function() {
 
     DiscussionsSearchSource.prototype.search = function (query) {
         query = query.toLowerCase();
-
         this.results[query] = [];
 
         const params = {
             filter: {q: query},
             page: {limit: 3},
-            include: 'relevantPosts,relevantPosts.discussion,relevantPosts.user'
+            include: 'mostRelevantPost'
         };
 
         return app.store.find('xun/discussions', params).then(results => this.results[query] = results);
