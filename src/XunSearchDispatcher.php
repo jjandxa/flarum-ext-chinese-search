@@ -64,7 +64,7 @@ class XunSearchDispatcher
     // 修改帖子到索引
     function revised(Revised $event) {
         if ($event->post->type === "comment") {
-            $this->xunSearchUtils->getIndex()->update(XunSearchUtils::getDocument($event->post->discussion,
+            $this->xunSearchUtils->getIndex()->update($this->xunSearchUtils->getDocument($event->post->discussion,
                 $event->post, $event->post->discussion->comments_count));
         }
     }
