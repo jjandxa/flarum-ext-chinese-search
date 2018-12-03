@@ -5,6 +5,8 @@ use Flarum\Post\Post;
 use Illuminate\Database\Schema\Builder;
 use Plugin\XunSearch\Utils\XunSearchUtils;
 
+@set_time_limit(0);
+@ini_set('max_execution_time', 0);
 $xunSearchUtils = new XunSearchUtils;
 
 return [
