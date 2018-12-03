@@ -94,7 +94,7 @@ class XunSearchDispatcher
     }
 
     // 话题恢复到索引
-    function discussionRestored(Restored $event) {
+    function discussionRestored(DiscussionRestored $event) {
         $this->xunSearchService->addDiscussion($event->discussion);
     }
 }
