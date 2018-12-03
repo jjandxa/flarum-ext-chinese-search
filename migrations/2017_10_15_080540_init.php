@@ -20,7 +20,7 @@ return [
                 ->where("type", "comment")->get();
 
             foreach ($posts as $post) {
-                $doc = XunSearchUtils::getDocument($discussion, $post, $posts->count());
+                $doc = $xunSearchUtils->getDocument($discussion, $post, $posts->count());
                 echo $discussion->title."->".$post->id."===";
                 $index->add($doc);
             }
