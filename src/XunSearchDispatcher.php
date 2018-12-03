@@ -89,7 +89,7 @@ class XunSearchDispatcher
     }
 
     // 话题隐藏到索引
-    function discussionHidden(Hidden $event) {
+    function discussionHidden(DiscussionHidden $event) {
         $this->xunSearchService->deleteDiscussion($event->discussion);
     }
 
