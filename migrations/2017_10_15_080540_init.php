@@ -1,37 +1,36 @@
 <?php
 
-
-use Flarum\Core\Discussion;
-use Flarum\Core\Post;
+use Flarum\Discussion\Discussion;
+use Flarum\Post\Post;
 use Illuminate\Database\Schema\Builder;
 use Plugin\XunSearch\Utils\XunSearchUtils;
 
+@set_time_limit(0);
+@ini_set('max_execution_time', 0);
+$xunSearchUtils = new XunSearchUtils;
+
 return [
-    'up' => function (XunSearchUtils $xunSearchUtils) {
+    'up' => function (Builder $schema) use ($xunSearchUtils) {
         $index = $xunSearchUtils->getIndex();
         $index->clean();
-
         $index->openBuffer(8);
 
-        $discussions = Discussion::query()->where("hide_time", null)->get();
-
+        $discussions = Discussion::query()->where("hidden_at", null)->get();
         foreach ($discussions as $discussion) {
-            $posts = Post::query()->where("hide_time", null)
+            $posts = Post::query()->where("hidden_at", null)
                 ->where("discussion_id", $discussion->id)
                 ->where("type", "comment")->get();
 
             foreach ($posts as $post) {
-                $doc = XunSearchUtils::getDocument($discussion, $post, $posts->count());
+                $doc = $xunSearchUtils->getDocument($discussion, $post, $posts->count());
                 echo $discussion->title."->".$post->id."===";
                 $index->add($doc);
             }
-
-
         }
 
         $index->closeBuffer();
     },
-    'down' => function (XunSearchUtils $xunSearchUtils) {
+    'down' => function (Builder $schema) use ($xunSearchUtils) {
         $index = $xunSearchUtils->getIndex();
         $index->clean();
     }

@@ -1,16 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: aixiaoai
- * Date: 17-10-14
- * Time: 上午12:51
- */
 
 namespace Plugin\XunSearch\Service;
 
-use Flarum\Core\Discussion;
-use Flarum\Core\Post;
-use Flarum\Core\Search\SearchResults;
+use Flarum\Discussion\Discussion;
+use Flarum\Post\Post;
+use Flarum\Search\SearchResults;
 use Illuminate\Database\Eloquent\Collection;
 use Plugin\XunSearch\Utils\XunSearchUtils;
 
@@ -30,33 +24,31 @@ class XunSearchService
 
 
     function search($query, $limit, $offset, $sort) {
-
         $convertData = $this->convertDiscussion($query, $limit + 1, $offset, $sort);
 
         $discussions = new Collection();
         if (count($convertData) > 0) {
-            $query = Discussion::query()->
-            whereIn("id", $this->getDiscussionIds($convertData));
+            $query = Discussion::query()->whereIn("id", $this->getDiscussionIds($convertData));
 
             if ($sort !== null) {
                 // 最新回复
-                if (array_key_exists("lastTime", $sort)) {
-                    $query = $query->orderBy("last_time", $sort["lastTime"]);
+                if (array_key_exists("lastPostedAt", $sort)) {
+                    $query = $query->orderBy("last_posted_at", $sort["lastPostedAt"]);
                 }
 
                 // 热门话题
-                if (array_key_exists("commentsCount", $sort)) {
-                    $query = $query->orderBy("comments_count", $sort["commentsCount"]);
+                if (array_key_exists("commentCount", $sort)) {
+                    $query = $query->orderBy("comment_count", $sort["commentCount"]);
                 }
 
                 // 近期话题
-                if (array_key_exists("startTime", $sort)) {
-                    $query = $query->orderBy("start_time", $sort["startTime"]);
+                if (array_key_exists("createdAt", $sort)) {
+                    $query = $query->orderBy("created_at", $sort["createdAt"]);
                 }
 
                 // 历史话题
-                if (array_key_exists("startTime", $sort)) {
-                    $query = $query->orderBy("start_time", $sort["startTime"]);
+                if (array_key_exists("createdAt", $sort)) {
+                    $query = $query->orderBy("created_at", $sort["createdAt"]);
                 }
 
             }
@@ -98,23 +90,23 @@ class XunSearchService
 
         if ($sort !== null) {
             // 最新回复
-            if (array_key_exists("lastTime", $sort)) {
-                $search->setSort("time", $sort["lastTime"] === "desc" ? false : true);
+            if (array_key_exists("lastPostedAt", $sort)) {
+                $search->setSort("time", $sort["lastPostedAt"] === "desc" ? false : true);
             }
 
             // 热门话题
-            if (array_key_exists("commentsCount", $sort)) {
-                $search->setSort("count", $sort["commentsCount"] === "desc" ? false : true);
+            if (array_key_exists("commentCount", $sort)) {
+                $search->setSort("count", $sort["commentCount"] === "desc" ? false : true);
             }
 
             // 近期话题
-            if (array_key_exists("startTime", $sort)) {
-                $search->setSort("discTime", $sort["startTime"] === "desc" ? false : true);
+            if (array_key_exists("createdAt", $sort)) {
+                $search->setSort("discTime", $sort["createdAt"] === "desc" ? false : true);
             }
 
             // 历史话题
-            if (array_key_exists("startTime", $sort)) {
-                $search->setSort("discTime", $sort["startTime"] === "desc" ? false : true);
+            if (array_key_exists("createdAt", $sort)) {
+                $search->setSort("discTime", $sort["createdAt"] === "desc" ? false : true);
             }
 
         }
