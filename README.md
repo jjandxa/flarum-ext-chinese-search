@@ -8,7 +8,7 @@ Flarum 论坛中文搜索插件 - 基于 xunsearch 搜索引擎开发
 >`gawk make gcc g++ zlib1g-dev`
 
 ### 安装插件
-`sudo composer require jjandxa/flarum-ext-chinese-search`
+`composer require jjandxa/flarum-ext-chinese-search`
 > 如果遇到权限问题， 则使用 `sudo` 进行安装, 安装完成后对相关文件权限进行设置
 
 ### 其他问题

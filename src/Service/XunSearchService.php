@@ -111,7 +111,11 @@ class XunSearchService
 
         }
 
-        $tempDiscData = $search->search("title:$query OR $query");
+        try {
+            $tempDiscData = $search->search("title:$query OR $query");
+        } catch (\XSException $e) {
+            $tempDiscData = [];
+        }
 
         // 取消折叠
         $search->setCollapse(null);
