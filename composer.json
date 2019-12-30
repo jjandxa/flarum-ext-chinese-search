@@ -3,7 +3,7 @@
     "description": "chinese search",
     "version": "0.0.9",
     "type": "flarum-extension",
-    "license": "Apache License 2.0",
+    "license": "apache-2.0",
     "authors": [
         {
             "name": "jjandxa",
