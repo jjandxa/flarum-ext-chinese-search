@@ -5,6 +5,7 @@ namespace Plugin\XunSearch\Controller;
 use Flarum\Api\Controller\ListDiscussionsController;
 use Flarum\Discussion\Discussion;
 use Flarum\Post\Post;
+use Illuminate\Support\Arr;
 use Plugin\XunSearch\Service\XunSearchService;
 use Flarum\Discussion\Search\DiscussionSearcher;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,7 +34,7 @@ class XunSearchController extends ListDiscussionsController
     protected function data(ServerRequestInterface $request, Document $document)
     {
         // 关键词
-        $query = array_get($this->extractFilter($request), 'q');
+        $query = Arr::get($this->extractFilter($request), 'q');
         // 分页数据
         $limit = $this->extractLimit($request);
         $offset = $this->extractOffset($request);
