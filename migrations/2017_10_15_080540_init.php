@@ -23,7 +23,6 @@ return [
 
             foreach ($posts as $post) {
                 $doc = $xunSearchUtils->getDocument($discussion, $post, $posts->count());
-                echo $discussion->title."->".$post->id."===";
                 $index->add($doc);
             }
         }

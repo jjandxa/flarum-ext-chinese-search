@@ -112,7 +112,7 @@ class XunSearchService
         }
 
         try {
-            $tempDiscData = $search->search("title:$query OR $query");
+            $tempDiscData = $search->setFuzzy(true)->search("title:$query OR $query");
         } catch (\XSException $e) {
             $tempDiscData = [];
         }
