@@ -4,7 +4,7 @@ import DiscussionListState from 'flarum/states/DiscussionListState';
 import DiscussionsSearchSource from 'flarum/components/DiscussionsSearchSource';
 
 app.initializers.add('flarum-ext-chinese-search', function () {
-  override(DiscussionListState.prototype, 'loadResults', function (offset) {
+  override(DiscussionListState.prototype, 'loadResults', function (original, offset) {
     const preloadedDiscussions = app.preloadedApiDocument();
 
     if (preloadedDiscussions) {
